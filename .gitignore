@@ -1,0 +1,19 @@
+# Ignore Node.js modules (commonly ignored for Node.js projects)
+node_modules/
+
+# Ignore temporary files
+*.tmp
+
+# Ignore log files
+*.log
+
+# Ignore IDE-specific files (e.g., Visual Studio Code settings, IntelliJ IDEA files, etc.)
+.vscode/
+.idea/
+
+# Ignore compiled code or build artifacts
+dist/
+build/
+
+# Ignore personal configuration files (e.g., .env files containing secrets)
+.env
