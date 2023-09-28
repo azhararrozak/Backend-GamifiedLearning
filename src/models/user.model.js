@@ -6,21 +6,6 @@ const User = mongoose.model(
     username: String,
     email: String,
     password: String,
-    point: {
-      type: Number,
-      default:0,
-    },
-    level: {
-      type: Number,
-      default: 1,
-    },
-    badges: [
-      {
-        name: String,
-        description: String,
-        images: String,
-      }
-    ],
     roles: [
       {
         type: mongoose.Schema.Types.ObjectId,
