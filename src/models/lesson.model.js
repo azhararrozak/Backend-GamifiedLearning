@@ -9,6 +9,16 @@ const Lesson = mongoose.model(
         },
         content: String,
         images: String,
+        completedByUsers: [{
+            userId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+            completed: {
+                type: Boolean,
+                default: false
+            },
+        }],
     })
 );
 

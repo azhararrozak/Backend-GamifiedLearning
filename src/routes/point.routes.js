@@ -12,4 +12,5 @@ module.exports = function(app) {
 
     app.post("/api/:userId/point/add", [authJwt.verifyToken], controller.addPoint);
     app.get("/api/:userId/point", [authJwt.verifyToken], controller.getUserPoint);
+    app.get("/api/point", [authJwt.verifyToken], controller.getAllUserPoint);
 }

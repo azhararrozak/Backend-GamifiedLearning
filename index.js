@@ -45,7 +45,8 @@ require("./src/routes/auth.routes")(app);
 require("./src/routes/user.routes")(app);
 require("./src/routes/lesson.routes")(app);
 require("./src/routes/contact.routes")(app);
-require("./src/routes/point.routes")(app)
+require("./src/routes/point.routes")(app);
+require("./src/routes/badge.routes")(app);
 
 // function to create roles
 async function initial() {
