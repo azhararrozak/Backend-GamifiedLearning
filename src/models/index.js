@@ -7,6 +7,7 @@ db.point = require("./point.model");
 db.pointHistory = require("./pointhistory.model");
 db.lesson = require("./lesson.model");
 db.badge = require("./badge.model");
+db.task = require("./tasks.model");
 
 db.ROLES = ["user", "admin"];
 
