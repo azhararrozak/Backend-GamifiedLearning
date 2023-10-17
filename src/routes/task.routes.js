@@ -15,4 +15,10 @@ module.exports = function(app) {
     app.post("/api/tasks", [authJwt.verifyToken, authJwt.isAdmin], controller.createTask);
     app.put("/api/tasks/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.updateTask);
     app.delete("/api/tasks/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteTask);
+
+
+    app.put("/api/tasks/:id/submit", [authJwt.verifyToken], controller.submitTask);
+    app.get("/api/tasks/:id/submit", [authJwt.verifyToken], controller.getListSubmit);
+    app.put("/api/tasks/:id/completed", [authJwt.verifyToken], controller.completeTask);
+
 }

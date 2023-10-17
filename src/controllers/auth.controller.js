@@ -2,6 +2,7 @@ const db = require("../models");
 const User = db.user;
 const Role = db.role;
 
+
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcrypt");
 
@@ -76,3 +77,5 @@ exports.signin = async (req, res) => {
       res.status(500).send({ message: err.message });
     }
   };
+
+  
