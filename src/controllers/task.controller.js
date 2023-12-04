@@ -81,28 +81,40 @@ exports.submitTask = async (req, res) => {
   }
 };
 
-exports.completeTask = async (req, res) => {
-  try {
-    const task = await Task.findById(req.params.id);
-    
-    task.submittedByUser.forEach((user) => {
-      if (user.userId == req.userId) {
-        user.completed = true;
-      }
-    });
-    await task.save();
-    res.send({ message: "Task was completed successfully!" });
-  } catch (err) {
-    res.status(500).send({ message: err.message });
-  }
-};
-
 exports.getListSubmit = async (req, res) => {
   try {
     const task = await Task.findById(req.params.id).populate(
       "submittedByUser.userId"
     );
     res.send(task.submittedByUser);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+exports.setcompletedTask = async (req, res) => {
+  try {
+    const task = await Task.findById(req.params.id).populate(
+      "submittedByUser.userId"
+    );
+
+    const checkUserSubmited = task.submittedByUser.find(
+      (submission) => submission.userId.username === req.body.name
+    );
+
+    if (!checkUserSubmited) {
+      res.status(400).send({ message: "You have not submitted this task!" });
+    } else {
+      if (checkUserSubmited.completed === true) {
+        res
+          .status(400)
+          .send({ message: "You have already completed this task!" });
+      } else {
+        checkUserSubmited.completed = true;
+        await task.save();
+        res.send({ message: "Task was completed successfully!" });
+      }
+    }
   } catch (err) {
     res.status(500).send({ message: err.message });
   }

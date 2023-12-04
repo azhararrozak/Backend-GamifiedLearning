@@ -9,5 +9,8 @@ module.exports = function(app) {
     );
     next();
   });
-  
+
+  app.get("/api/users", [authJwt.verifyToken], controller.getUsers);
+  app.get("/api/users/:id", [authJwt.verifyToken], controller.getUserById);
+  app.put("/api/users/:id", [authJwt.verifyToken], controller.updateUser);
 };
