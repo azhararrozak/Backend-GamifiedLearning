@@ -19,7 +19,6 @@ const User = mongoose.model(
         ref: "Role"
       }
     ],
-    problem: String,
   })
 );
 

@@ -1,5 +1,6 @@
 const db = require("../models");
 const Quiz = db.quiz;
+const Score = db.score;
 
 exports.createQuiz = async (req, res) => {
     const { title, description, questions } = req.body;
@@ -21,8 +22,10 @@ exports.createQuiz = async (req, res) => {
 
 exports.getQuiz = async (req, res) => {
     try {
-        const quiz = await Quiz.find();
+        // filter quiz title pretest dan postest agar tidak ditampilkan
+        const quiz = await Quiz.find({ title: { $nin: ["pretest", "postest"] } });
         res.send(quiz);
+
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
@@ -70,6 +73,43 @@ exports.deleteQuiz = async (req, res) => {
     try {
         const quiz = await Quiz.findByIdAndRemove(req.params.id);
         res.send({ message: "Quiz was deleted successfully!" });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+exports.submitQuiz = async (req, res) => {
+    const { id } = req.params;
+    const { selectedAnswers } = req.body;
+
+    try {
+        const quiz = await Quiz.findById(id);
+        const { questions } = quiz;
+        let score = 0;
+
+        questions.forEach((question, index) => {
+            if (question.correctAnswer === selectedAnswers[index]) {
+                score += 10;
+            }
+        });
+
+        const scoreExist = await Score.findOne({ user: req.userId });
+
+        if (scoreExist) {
+            if (score > scoreExist.pretest) {
+                scoreExist.pretest = score;
+                await scoreExist.save();
+            }
+        }else{
+            const newScore = new Score({
+                pretest: score,
+                user: req.userId,
+            });
+    
+            await newScore.save();
+        }
+
+        res.send({ score });
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
