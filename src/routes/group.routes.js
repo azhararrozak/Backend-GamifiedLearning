@@ -10,6 +10,7 @@ module.exports = function(app) {
         next();
     });
 
-    app.get("/api/score", [authJwt.verifyToken], controller.getAllScore);
-    app.get("/api/score/group", [authJwt.verifyToken], controller.createGroup);
+    app.post("/api/score/group", [authJwt.verifyToken], controller.createGroup);
+    app.get("/api/score/group", [authJwt.verifyToken], controller.getGroup);
+    app.delete("/api/score/group", [authJwt.verifyToken], controller.deleteGroup);
 }

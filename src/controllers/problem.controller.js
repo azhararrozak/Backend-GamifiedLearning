@@ -27,3 +27,12 @@ exports.getProblems = async (req, res) => {
         res.status(500).send({ message: error.message });
     }
 }
+
+exports.deleteProblems = async (req, res) => {
+    try {
+        await Problem.deleteMany();
+        res.send({ message: "Problems deleted successfully" });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}

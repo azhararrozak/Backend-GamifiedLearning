@@ -11,6 +11,7 @@ db.task = require("./tasks.model");
 db.quiz = require("./quiz.model")
 db.problem = require("./problem.model");
 db.score = require("./scores.model");
+db.group = require("./group.model");
 
 db.ROLES = ["user", "admin"];
 

@@ -26,7 +26,7 @@ exports.getQuiz = async (req, res) => {
         const quiz = await Quiz.find({ title: { $nin: ["pretest", "postest"] } });
         res.send(quiz);
 
-    } catch (error) {
+    } catch (error) {cx
         res.status(500).send({ message: error.message });
     }
 }

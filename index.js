@@ -50,6 +50,7 @@ require("./src/routes/badge.routes")(app);
 require("./src/routes/task.routes")(app);
 require("./src/routes/quiz.routes")(app);
 require("./src/routes/group.routes")(app);
+require("./src/routes/score.routes")(app);
 
 // function to create roles
 async function initial() {
