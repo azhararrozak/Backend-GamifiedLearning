@@ -44,30 +44,9 @@ exports.createGroup = async (req, res) => {
             }
         }
 
-        // masukkan ke mongo
+        // masukkan ke db
         await Group.insertMany(group);
         res.send({ message: "Group created successfully" });
-
-
-        // let index = 0;
-        // for (let i = 0; i < groupA.length; i++) {
-        //     group[index].members.push(groupA[i].user);
-        //     index++;
-        //     if (index >= countGroup) {
-        //         index = 0;
-        //     }
-        // }
-        
-        // for (let i = 0; i < groupB.length; i++) {
-        //     group[index].members.push(groupB[i].user);
-        //     index++;
-        //     if (index >= countGroup) {
-        //         index = 0;
-        //     }
-        // }
-
-        // res.send(group);
-
     } catch (error) {
         res.status(500).send({ message: error.message });
     }
