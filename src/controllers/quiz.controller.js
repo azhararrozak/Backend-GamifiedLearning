@@ -34,7 +34,7 @@ exports.getQuiz = async (req, res) => {
 exports.getQuizByTitle = async (req, res) => {
     try {
         const title = req.params.title;
-        const quiz = await Quiz.findOne({ title }); 
+        const quiz = await Quiz.findOne({ title }).select('-questions.options.isCorrect');; 
         res.json({ quiz });
       } catch (error) {
         res.status(500).json({ message: error.message });
@@ -88,9 +88,18 @@ exports.submitQuiz = async (req, res) => {
         let score = 0;
 
         questions.forEach((question, index) => {
-            if (question.correctAnswer === selectedAnswers[index]) {
+            //Bandingkan options yang dipilih dengan jawaban yang benar yang dikirim dari selectedAnswer adalah id per option
+            //Jadi cari option yang id nya sama dengan selectedAnswer[index]
+            const selectedOption = question.options.find(
+                (option) => option._id.toString() === selectedAnswers[index]
+            );
+
+            //Jika option yang dipilih adalah jawaban yang benar, maka tambahkan score
+            if (selectedOption.isCorrect) {
                 score += 10;
             }
+            
+
         });
 
         const scoreExist = await Score.findOne({ user: req.userId });
