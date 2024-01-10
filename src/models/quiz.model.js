@@ -25,8 +25,11 @@ const mongoose = require("mongoose");
 const questionsSchema = new mongoose.Schema({
   question: { type: String, required: true },
   image: String,
-  options: [{ type: String, required: true }],
-  correctAnswer: { type: Number, required: true },
+  options: [{
+    text: { type: String, required: true },
+    image: String,
+    isCorrect: { type: Boolean, required: true, default: false },
+  }],
 });
 
 const quizSchema = new mongoose.Schema({

@@ -17,3 +17,6 @@ build/
 
 # Ignore personal configuration files (e.g., .env files containing secrets)
 .env
+
+#Proxy
+.gitconfig
