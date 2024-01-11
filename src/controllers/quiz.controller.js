@@ -34,7 +34,7 @@ exports.getQuiz = async (req, res) => {
 exports.getQuizByTitle = async (req, res) => {
     try {
         const title = req.params.title;
-        const quiz = await Quiz.findOne({ title }).select('-questions.options.isCorrect');; 
+        const quiz = await Quiz.findOne({ title }).select('-questions.options.isCorrect');
         res.json({ quiz });
       } catch (error) {
         res.status(500).json({ message: error.message });
@@ -43,7 +43,7 @@ exports.getQuizByTitle = async (req, res) => {
 
 exports.getQuizById = async (req, res) => {
     try {
-        const quiz = await Quiz.findById(req.params.id);
+        const quiz = await Quiz.findById(req.params.id).select('-questions.options.isCorrect');
         res.send(quiz);
     } catch (error) {
         res.status(500).send({ message: error.message });

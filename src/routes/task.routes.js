@@ -19,5 +19,5 @@ module.exports = function(app) {
 
     app.put("/api/tasks/:id/submit", [authJwt.verifyToken], controller.submitTask);
     app.get("/api/tasks/:id/submit", [authJwt.verifyToken], controller.getListSubmit);
-    app.patch("/api/tasks/:id/completed", [authJwt.verifyToken], controller.setcompletedTask);
+    app.patch("/api/tasks/:id/completed", [authJwt.verifyToken, authJwt.isAdmin], controller.setcompletedTask);
 }
