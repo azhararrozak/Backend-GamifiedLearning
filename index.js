@@ -1,43 +1,67 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const mongoose = require('mongoose');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const http = require("http");
+const socketIO = require("socket.io");
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIO(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
 
 const corsOptions = {
-    origin: '*',
-    credentials: true
-}
+  origin: "*",
+  credentials: true,
+};
 
 // middleware
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//connect to db mongo
+// connect to db mongo
 const db = require("./src/models");
 const Role = db.role;
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
-}).then(() => {
+    useUnifiedTopology: true,
+  })
+  .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
-}).catch(err => {
+  })
+  .catch((err) => {
     console.error("Connection error", err);
-    process.exit(); 
+    process.exit();
+  });
+
+// set up Socket.IO
+io.on("connection", (socket) => {
+  console.log("a user connected");
+
+  socket.on('chat message', (msg) => {
+    console.log(msg)
+    io.emit('chat message', msg); // Broadcast the message to all connected clients
+  });
 });
 
 // simple route
 app.get("/", (req, res) => {
-    res.json({ message: "Welcome to the backend." });
+  res.json({ message: "Welcome to the backend." });
 });
 
 // start server
-app.listen(5000, () => {
-    console.log("Server is running on port 5000.");
+const PORT = process.env.PORT || 5000;
+server.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}.`);
 });
 
 // routes
@@ -54,22 +78,21 @@ require("./src/routes/score.routes")(app);
 
 // function to create roles
 async function initial() {
-    try {
-      const count = await Role.estimatedDocumentCount();
-  
-      if (count === 0) {
-        await new Role({
-          name: "user"
-        }).save();
-  
-        await new Role({
-          name: "admin"
-        }).save();
-  
-        console.log("Added 'user' and 'admin' to roles collection");
-      }
-    } catch (err) {
-      console.error("Error:", err);
+  try {
+    const count = await Role.estimatedDocumentCount();
+
+    if (count === 0) {
+      await new Role({
+        name: "user",
+      }).save();
+
+      await new Role({
+        name: "admin",
+      }).save();
+
+      console.log("Added 'user' and 'admin' to roles collection");
     }
+  } catch (err) {
+    console.error("Error:", err);
   }
-  
+}

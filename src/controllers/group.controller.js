@@ -44,6 +44,11 @@ exports.createGroup = async (req, res) => {
             }
         }
 
+        //create lead form members data
+        for (let i = 0; i < group.length; i++) {
+            group[i].lead = group[i].members[0];
+        }
+
         // masukkan ke db
         await Group.insertMany(group);
         res.send({ message: "Group created successfully" });
@@ -54,7 +59,7 @@ exports.createGroup = async (req, res) => {
 
 exports.getGroup = async (req, res) => {
     try {
-        const group = await Group.find().populate("members", "-__v");
+        const group = await Group.find().populate("members", "-__v").populate("lead", "-__v");
         res.send(group);
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -65,6 +70,22 @@ exports.deleteGroup = async (req, res) => {
     try {
         await Group.deleteMany();
         res.send({ message: "Group deleted successfully" });
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+exports.updateProblem = async (req, res) => {
+    const { title, description } = req.body;
+
+    try{
+        const group = await Group.findByIdAndUpdate(req.params.id, {
+            $set: {
+                "problem.title": title,
+                "problem.description": description,
+            }
+        });
+        res.send({ message: "Problem updated successfully" });
     } catch (error) {
         res.status(500).send({ message: error.message });
     }

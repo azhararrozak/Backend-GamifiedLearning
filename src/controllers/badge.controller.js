@@ -17,7 +17,7 @@ exports.addBadge = async (req, res) => {
         user: userId,
         name: badgeName,
         description: "Anda telah menyelesaikan kursus",
-        image: "https://i.ibb.co/0jZQY0K/Group-1.png",
+        image: "https://res.cloudinary.com/dqzp5nrox/image/upload/v1705545720/badges/bgs_fnsmaterial_bzhstx.png",
       });
       await badge.save();
       return res.status(201).json({ message: "Anda Mendapatkan Badge" });

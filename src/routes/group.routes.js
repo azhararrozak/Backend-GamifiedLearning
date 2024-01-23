@@ -13,4 +13,5 @@ module.exports = function(app) {
     app.post("/api/score/group", [authJwt.verifyToken, authJwt.isAdmin], controller.createGroup);
     app.get("/api/score/group", [authJwt.verifyToken], controller.getGroup);
     app.delete("/api/score/group", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteGroup);
+    app.patch("/api/score/group/:id", [authJwt.verifyToken], controller.updateProblem);
 }
