@@ -28,6 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 // connect to db mongo
 const db = require("./src/models");
 const Role = db.role;
+const Chat = db.chat;
 
 mongoose
   .connect(process.env.MONGODB_URI, {
@@ -45,11 +46,16 @@ mongoose
 
 // set up Socket.IO
 io.on("connection", (socket) => {
-  console.log("a user connected");
 
-  socket.on('chat message', (msg) => {
-    console.log(msg)
-    io.emit('chat message', msg); // Broadcast the message to all connected clients
+  socket.on('chat message', (msg, user) => {
+    //Save to mongo
+    const chat = new Chat({
+      user: user,
+      msg: msg
+    });
+    chat.save();
+
+    io.emit('chat message', {user, msg}); // Broadcast the message to all connected clients
   });
 });
 
@@ -75,6 +81,8 @@ require("./src/routes/task.routes")(app);
 require("./src/routes/quiz.routes")(app);
 require("./src/routes/group.routes")(app);
 require("./src/routes/score.routes")(app);
+require("./src/routes/chat.routes")(app);
+require("./src/routes/unit.route")(app);
 
 // function to create roles
 async function initial() {

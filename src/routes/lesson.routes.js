@@ -10,7 +10,7 @@ module.exports = function(app) {
         next();
     });
 
-    app.get("/api/lessons", [authJwt.verifyToken], controller.getLessons);
+    app.get("/api/units/:id", [authJwt.verifyToken], controller.getLessons);
     app.get("/api/lessons/:id", [authJwt.verifyToken], controller.getLessonById);
     app.post("/api/lessons", [authJwt.verifyToken, authJwt.isAdmin], controller.createLesson);
     app.put("/api/lessons/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.updateLesson);

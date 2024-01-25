@@ -9,6 +9,14 @@ const Lesson = mongoose.model(
         },
         content: String,
         images: String,
+        video: {
+            urlVideo: { type: String, required: true},
+            commentars: [{
+                user: String,
+                comment: String,
+                timestamp: { type: Date, default: Date.now },
+            }],
+        },
         completedByUsers: [{
             userId: {
                 type: mongoose.Schema.Types.ObjectId,
