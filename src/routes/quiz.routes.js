@@ -11,7 +11,12 @@ module.exports = function(app) {
     });
 
     app.get("/api/quiz/:title", [authJwt.verifyToken], controller.getQuizByTitle);
-    app.post("/api/quiz/:id/submit", [authJwt.verifyToken], controller.submitQuiz)
+
+    app.post("/api/quiz/:id/submitquiz", [authJwt.verifyToken], controller.submitQuiz)
+    app.post("/api/quiz/:id/submitpretest", [authJwt.verifyToken], controller.submitPretest)
+    app.post("/api/quiz/:id/submitpostest", [authJwt.verifyToken], controller.submitPostest)
+
+
     app.post("/api/quiz", [authJwt.verifyToken, authJwt.isAdmin], controller.createQuiz);
     app.get("/api/quiz", [authJwt.verifyToken], controller.getQuiz);
     app.get("/api/quiz/:id", [authJwt.verifyToken], controller.getQuizById);
