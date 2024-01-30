@@ -15,22 +15,10 @@ const Score = mongoose.model(
             type: Number,
             default: 0,
         },
-        quizmaterial1: {
-            type: Number,
-            default: 0,
-        },
-        quizmaterial2: {
-            type: Number,
-            default: 0,
-        },
-        quizmaterial3: {
-            type: Number,
-            default: 0,
-        },
-        quizmaterial4: {
-            type: Number,
-            default: 0,
-        },
+        quizmaterials: [{
+            title: String,
+            score: Number,
+        }],
     })
 );
 

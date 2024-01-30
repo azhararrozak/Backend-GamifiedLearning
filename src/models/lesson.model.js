@@ -10,7 +10,7 @@ const Lesson = mongoose.model(
         content: String,
         images: String,
         video: {
-            urlVideo: { type: String, required: true},
+            urlVideo: { type: String },
             commentars: [{
                 user: String,
                 comment: String,

@@ -15,8 +15,8 @@ const chatSchema = new mongoose.Schema({
     },
 });
 
-// Set indeks TTL pada bidang timestamp untuk menghapus dokumen setelah 1 hari
-chatSchema.index({ timestamp: 1 }, { expireAfterSeconds: 86400 });
+// Set indeks TTL pada bidang timestamp untuk menghapus dokumen setelah 3 hari
+chatSchema.index({ timestamp: 1 }, { expireAfterSeconds: 518400 });
 
 const Chat = mongoose.model("Chat", chatSchema);
 

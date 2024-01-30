@@ -11,6 +11,6 @@ module.exports = function(app) {
     });
 
     app.get("/api/units", [authJwt.verifyToken], controller.getUnits);
-    app.get("/api/units/:id", [authJwt.verifyToken], controller.getUnitById);
+    // app.get("/api/units/:id", [authJwt.verifyToken], controller.getUnitById);
     app.post("/api/units", [authJwt.verifyToken, authJwt.isAdmin], controller.createUnit);
 }

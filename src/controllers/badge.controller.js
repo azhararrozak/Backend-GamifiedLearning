@@ -1,9 +1,11 @@
 const db = require("../models");
 const Badge = db.badge;
+const Unit = db.unit;
 
 exports.addBadge = async (req, res) => {
   const userId = req.params.userId;
   const badgeName = req.body.badgeName;
+  const unitId = req.body.unitId;
   try {
     // Cek apakah pengguna sudah memiliki badge dengan nama yang sama
     const existingBadge = await Badge.findOne({ user: userId, name: badgeName });
@@ -12,11 +14,16 @@ exports.addBadge = async (req, res) => {
       return res.status(400).json({ message: "Anda sudah menyelesaikannya" });
     }
 
-    if (badgeName === "Kursus Selesai") {
+    const unit = await Unit.findById(unitId);
+    if (!unit) {
+      return res.status(404).json({ message: "Unit tidak ditemukan" });
+    }
+
+    if (badgeName === unit.title) {
       const badge = new Badge({
         user: userId,
         name: badgeName,
-        description: "Anda telah menyelesaikan kursus",
+        description: `Anda telah menyelesaikan ${badgeName}`,
         image: "https://res.cloudinary.com/dqzp5nrox/image/upload/v1705545720/badges/bgs_fnsmaterial_bzhstx.png",
       });
       await badge.save();

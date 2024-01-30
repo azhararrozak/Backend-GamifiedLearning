@@ -1,6 +1,7 @@
 const db = require("../models");
 const Quiz = db.quiz;
 const Score = db.score;
+const Point = db.point;
 
 exports.createQuiz = async (req, res) => {
   const { title, description, questions } = req.body;
@@ -44,12 +45,11 @@ exports.getQuizByTitle = async (req, res) => {
 
 exports.getQuizById = async (req, res) => {
   try {
-    const quiz = await Quiz.findById(req.params.id).select(
-      "-questions.options.isCorrect"
-    );
-    res.send(quiz);
+    const id = req.params.id;
+    const quiz = await Quiz.findById(id).select("-questions.options.isCorrect");
+    res.json({ quiz });
   } catch (error) {
-    res.status(500).send({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -82,22 +82,20 @@ exports.deleteQuiz = async (req, res) => {
 };
 
 exports.submitQuiz = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.params;
   const { selectedAnswers } = req.body;
 
   try {
     const quiz = await Quiz.findById(id);
+    const { title } = quiz;
     const { questions } = quiz;
     let score = 0;
 
     questions.forEach((question, index) => {
-      //Bandingkan options yang dipilih dengan jawaban yang benar yang dikirim dari selectedAnswer adalah id per option
-      //Jadi cari option yang id nya sama dengan selectedAnswer[index]
       const selectedOption = question.options.find(
         (option) => option._id.toString() === selectedAnswers[index]
       );
 
-      //Jika option yang dipilih adalah jawaban yang benar, maka tambahkan score
       if (selectedOption.isCorrect) {
         score += 10;
       }
@@ -106,19 +104,32 @@ exports.submitQuiz = async (req, res) => {
     const scoreExist = await Score.findOne({ user: req.userId });
 
     if (scoreExist) {
-        if (score > scoreExist.pretest) {
-            scoreExist.pretest = score;
-            await scoreExist.save();
-        }
-    }else{
-        const newScore = new Score({
-            pretest: score,
-            user: req.userId,
-        });
+      // Temukan quizmaterial yang sesuai dengan title
+      const quizMaterialIndex = scoreExist.quizmaterials.findIndex(
+        (qm) => qm.title === title
+      );
 
-        await newScore.save();
-        res.send({ score, message: `Score Anda ${score}` });
+      if (quizMaterialIndex !== -1) {
+        // Jika sudah ada quizmaterial dengan title yang sama, update score
+        if (score > scoreExist.quizmaterials[quizMaterialIndex].score) {
+          scoreExist.quizmaterials[quizMaterialIndex].score = score;
+        }
+      } else {
+        // Jika belum ada quizmaterial dengan title yang sama, tambahkan baru
+        scoreExist.quizmaterials.push({ title, score });
+      }
+
+      await scoreExist.save();
+    } else {
+      const newScore = new Score({
+        quizmaterials: [{ title, score }],
+        user: req.userId,
+      });
+
+      await newScore.save();
     }
+
+    res.send({ score, message: `Score Anda ${score}` });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -164,6 +175,21 @@ exports.submitPretest = async (req, res) => {
       });
 
       await newScore.save();
+
+      //Add point 5 berdasarkan jumlah benar dan hanya sekali submit
+      const point = await Point.findOne({ user: req.userId });
+      if (point) {
+        point.point += (score / 10) * 5;
+        await point.save();
+      } else {
+        const newPoint = new Point({
+          point: (score / 10) * 5,
+          user: req.userId,
+        });
+
+        await newPoint.save();
+      }
+
       res.send({ score, message: `Score Anda ${score}` });
     }
 

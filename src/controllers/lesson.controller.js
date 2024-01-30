@@ -5,7 +5,7 @@ const Unit = db.unit;
 exports.getLessons = async (req, res) => {
     try {
         const unit = await Unit.findById(req.params.id).populate("lessons");
-        res.send(unit.lessons);
+        res.send(unit);
     } catch (err) {
         res.status(500).send({ message: err.message });
     }
