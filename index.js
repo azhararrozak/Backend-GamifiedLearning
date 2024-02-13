@@ -11,11 +11,13 @@ const io = socketIO(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
+    credentials: false
   }
 });
 
 const corsOptions = {
   origin: "*",
+  credentials: false,
 };
 
 // middleware
