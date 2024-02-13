@@ -17,6 +17,10 @@ const Lesson = mongoose.model(
                 timestamp: { type: Date, default: Date.now },
             }],
         },
+        unit: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Unit",
+        },
         completedByUsers: [{
             userId: {
                 type: mongoose.Schema.Types.ObjectId,

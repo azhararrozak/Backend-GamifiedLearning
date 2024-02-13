@@ -13,6 +13,8 @@ db.score = require("./scores.model");
 db.group = require("./group.model");
 db.chat = require("./chat.model");
 db.unit = require("./unit.model");
+db.evaluasi = require("./evaluasi.model");
+db.refleksi = require("./refleksi.model");
 
 db.ROLES = ["user", "admin"];
 

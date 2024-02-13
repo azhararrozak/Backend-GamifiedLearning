@@ -7,22 +7,15 @@ const Unit = mongoose.model(
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+    },
     lessons: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Lesson",
       },
     ],
-    // completedByUsers: [{
-    //     userId: {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: "User",
-    //     },
-    //     completed: {
-    //         type: Boolean,
-    //         default: false
-    //     },
-    // }],
   })
 );
 

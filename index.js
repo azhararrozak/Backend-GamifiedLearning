@@ -38,6 +38,9 @@ mongoose
   .then(() => {
     console.log("Successfully connect to MongoDB.");
     initial();
+    require("./src/seeds/seedUnit")
+    require("./src/seeds/seedEvaluasi")
+    require("./src/seeds/seedRefleksi")
   })
   .catch((err) => {
     console.error("Connection error", err);
@@ -83,6 +86,8 @@ require("./src/routes/group.routes")(app);
 require("./src/routes/score.routes")(app);
 require("./src/routes/chat.routes")(app);
 require("./src/routes/unit.route")(app);
+require("./src/routes/evaluasi.routes")(app);
+require("./src/routes/refleksi.routes")(app);
 
 // function to create roles
 async function initial() {

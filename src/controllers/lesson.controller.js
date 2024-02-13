@@ -27,6 +27,7 @@ exports.createLesson = async (req, res) => {
         const unit = await Unit.findById(unitId);
 
         const lesson = new Lesson({
+            unit: unitId,
             title: req.body.title,
             content: req.body.content,
             images: req.body.images,
@@ -63,9 +64,34 @@ exports.updateLesson = async (req, res) => {
 
 exports.deleteLesson = async (req, res) => {
     try {
-        await Lesson.findByIdAndRemove(req.params.id);
+        const lesson = await Lesson.findByIdAndRemove(req.params.id);
+
+        // Check if the lesson exists
+        if (!lesson) {
+            return res.status(404).send({ message: "Lesson not found" });
+        }
+
+        // Remove the lesson from the unit
+        await Unit.updateOne(
+            { _id: lesson.unit }, // Assuming lesson has a reference to the unit
+            { $pull: { lessons: req.params.id } } // Assuming lessons is an array field in the Unit model
+        );
+
         res.send({ message: "Lesson was deleted successfully!" });
     } catch (err) {
+        res.status(500).send({ message: err.message });
+    }
+}
+
+exports.postCommentVideo = async (req, res) => {
+    try{
+        const user = req.body.user;
+        const comment = req.body.comment;
+        const lesson = await Lesson.findById(req.params.id);
+        lesson.video.commentars.push({user, comment});
+        await lesson.save();
+        res.send({ message: "Comment was added successfully!" });
+    }catch(err) {
         res.status(500).send({ message: err.message });
     }
 }

@@ -129,7 +129,7 @@ exports.submitQuiz = async (req, res) => {
       await newScore.save();
     }
 
-    res.send({ score, message: `Score Anda ${score}` });
+    res.send({ score });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -159,25 +159,13 @@ exports.submitPretest = async (req, res) => {
 
     const scoreExist = await Score.findOne({ user: req.userId });
 
-    //Jika score sudah melampaui user tidak dapat submit lagi
+    //Jika score sudah ada tidak bisa submit lagi
     if (scoreExist) {
-      if (scoreExist.pretest < 80) {
-        scoreExist.pretest = score;
-        await scoreExist.save();
-        res.send({ score, message: `Score Anda ${score}` });
-      } else {
-        res.status(400).send({ message: "Already submitted the quiz!" });
-      }
+      res.status(400).send({ message: "Anda Sudah Mengerjakan Pretest ini" });
     } else {
-      const newScore = new Score({
-        pretest: score,
-        user: req.userId,
-      });
-
-      await newScore.save();
-
       //Add point 5 berdasarkan jumlah benar dan hanya sekali submit
       const point = await Point.findOne({ user: req.userId });
+
       if (point) {
         point.point += (score / 10) * 5;
         await point.save();
@@ -190,7 +178,14 @@ exports.submitPretest = async (req, res) => {
         await newPoint.save();
       }
 
-      res.send({ score, message: `Score Anda ${score}` });
+      const newScore = new Score({
+        pretest: score,
+        user: req.userId,
+      });
+
+      await newScore.save();
+
+      res.send({ score });
     }
 
     // if (scoreExist) {
@@ -239,13 +234,7 @@ exports.submitPostest = async (req, res) => {
 
     //Jika score sudah melampaui user tidak dapat submit lagi
     if (scoreExist) {
-      if (scoreExist.posttest < 80) {
-        scoreExist.posttest = score;
-        await scoreExist.save();
-        res.send({ score, message: `Score Anda ${score}` });
-      } else {
-        res.status(400).send({ message: "Already submitted the quiz!" });
-      }
+      res.status(400).send({ message: "Anda Sudah Mengerjakan Postest ini" });
     } else {
       const newScore = new Score({
         posttest: score,
@@ -253,7 +242,7 @@ exports.submitPostest = async (req, res) => {
       });
 
       await newScore.save();
-      res.send({ score, message: `Score Anda ${score}` });
+      res.send({ score });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });

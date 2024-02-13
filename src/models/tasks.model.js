@@ -8,6 +8,7 @@ const Task = mongoose.model(
             required: true,
         },
         content: String,
+        urlTask: String,
         date: {
             type: Date,
             default: Date.now(),

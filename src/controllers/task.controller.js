@@ -23,6 +23,7 @@ exports.createTask = async (req, res) => {
   try {
     const task = new Task({
       title: req.body.title,
+      urlTask: req.body.urlTask,
       content: req.body.content,
     });
 
@@ -38,6 +39,7 @@ exports.updateTask = async (req, res) => {
     const task = await Task.findById(req.params.id);
     task.title = req.body.title;
     task.content = req.body.content;
+    task.urlTask = req.body.urlTask;
 
     await task.save();
     res.send({ message: "Task was updated successfully!" });

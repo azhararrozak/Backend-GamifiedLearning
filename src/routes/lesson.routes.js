@@ -15,4 +15,5 @@ module.exports = function(app) {
     app.post("/api/lessons", [authJwt.verifyToken, authJwt.isAdmin], controller.createLesson);
     app.put("/api/lessons/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.updateLesson);
     app.delete("/api/lessons/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteLesson);
+    app.patch("/api/lessons/:id/comment", [authJwt.verifyToken], controller.postCommentVideo);
 }

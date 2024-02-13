@@ -95,7 +95,7 @@ exports.getUserPoint = async (req, res) => {
 
 exports.getAllUserPoint = async (req, res) => {
   try {
-    const userPoints = await Point.find().populate("user", "username");
+    const userPoints = await Point.find().populate("user");
 
     if (!userPoints) {
       return res.status(404).json({ message: "Poin pengguna tidak ditemukan." });
