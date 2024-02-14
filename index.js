@@ -4,12 +4,16 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const https = require("https")
 const fs = require('fs');
+const path = require("path");
 const socketIO = require("socket.io");
+const keyPath = path.resolve(process.env.PRIV_KEY);
+const certPath = path.resolve(process.env.CERT);
+
 
 const app = express();
 const server = https.createServer({
-  key: fs.readFileSync(process.env.PRIV_KEY),
-  cert: fs.readFileSync(process.env.FULL_CHAIN),
+  key: fs.readFileSync(keyPath),
+  cert: fs.readFileSync(certPath),
 }, app);
 
 const io = socketIO(server, {
