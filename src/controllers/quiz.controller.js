@@ -158,21 +158,7 @@ exports.submitPretest = async (req, res) => {
       }
     });
 
-    questions.forEach(async (question, index) => {
-      const selectedOptionId = selectedAnswers[index]; // ID opsi yang dipilih oleh siswa
-      const isCorrect = question.options.some(option => option._id.toString() === selectedOptionId && option.isCorrect);
     
-      const newAnswer = new AnswerPretest({
-        user: req.userId,
-        answer: [{
-          question: question._id,
-          selectedOption: selectedOptionId,
-          isCorrect,
-        }]
-      });
-    
-      await newAnswer.save();
-    });
 
     const scoreExist = await Score.findOne({ user: req.userId });
 
@@ -243,6 +229,23 @@ exports.submitPostest = async (req, res) => {
       });
 
       await newScore.save();
+
+      questions.forEach(async (question, index) => {
+        const selectedOptionId = selectedAnswers[index]; // ID opsi yang dipilih oleh siswa
+        const isCorrect = question.options.some(option => option._id.toString() === selectedOptionId && option.isCorrect);
+      
+        const newAnswer = new AnswerPretest({
+          user: req.userId,
+          answer: [{
+            question: question._id,
+            selectedOption: selectedOptionId,
+            isCorrect,
+          }]
+        });
+      
+        await newAnswer.save();
+      });
+      
       res.send({ score });
     }
   } catch (error) {
