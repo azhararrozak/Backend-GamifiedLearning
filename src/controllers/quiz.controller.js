@@ -159,7 +159,6 @@ exports.submitPretest = async (req, res) => {
 
       answerPretest.answers.push({
         question: question._id,
-        selectedOption: selectedOptionId,
         isCorrect,
       });
 
