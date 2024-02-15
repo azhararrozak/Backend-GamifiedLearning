@@ -154,8 +154,9 @@ exports.submitPretest = async (req, res) => {
 
     questions.forEach((question, index) => {
       const selectedOptionId = selectedAnswers[index];
-      const isCorrect = question.options.some(option =>
-        option._id.toString() === selectedOptionId && option.isCorrect
+      const isCorrect = question.options.some(
+        (option) =>
+          option._id.toString() === selectedOptionId && option.isCorrect
       );
 
       answerPretest.answers.push({
@@ -169,26 +170,39 @@ exports.submitPretest = async (req, res) => {
     });
 
     // Cek apakah pengguna sudah memiliki skor pretest sebelumnya
-    const existingAnswerPretest = await AnswerPretest.findOne({ user: req.userId });
+    const existingAnswerPretest = await AnswerPretest.findOne({
+      user: req.userId,
+    });
 
     if (existingAnswerPretest) {
-      return res.status(400).send({ message: "Anda sudah mengerjakan pretest ini" });
+      return res
+        .status(400)
+        .send({ message: "Anda sudah mengerjakan pretest ini" });
     }
 
     // Simpan objek AnswerPretest
     await AnswerPretest.create(answerPretest);
 
     // Tambahkan poin
-    const point = await Point.findOne({ user: req.userId }) || new Point({ user: req.userId });
+    const point =
+      (await Point.findOne({ user: req.userId })) ||
+      new Point({ user: req.userId });
     point.point += (score / 10) * 5;
     await point.save();
 
     // Simpan skor pretest
-    const newScore = new Score({
-      pretest: score,
-      user: req.userId,
-    });
-    await newScore.save();
+    const scoreExist = await Score.findOne({ user: req.userId });
+
+    if (scoreExist) {
+      scoreExist.pretest = score;
+      await scoreExist.save();
+    } else {
+      const newScore = new Score({
+        pretest: score,
+        user: req.userId,
+      });
+      await newScore.save();
+    }
 
     res.send({ score });
   } catch (error) {
@@ -196,13 +210,14 @@ exports.submitPretest = async (req, res) => {
   }
 };
 
-
 exports.submitPostest = async (req, res) => {
   const { id } = req.params;
   const { selectedAnswers } = req.body;
 
   //cek user sudah mengerjakan pretest
-  const existingAnswerPretest = await AnswerPretest.findOne({ user: req.userId });
+  const existingAnswerPretest = await AnswerPretest.findOne({
+    user: req.userId,
+  });
   if (!existingAnswerPretest) {
     return res.status(400).send({ message: "Anda belum mengerjakan pretest" });
   }
@@ -215,13 +230,15 @@ exports.submitPostest = async (req, res) => {
     // Hitung skor dan simpan jawaban dalam satu objek AnswerPostest
     const answerPostest = {
       user: req.userId,
+      score: score,
       answers: [],
     };
 
     questions.forEach((question, index) => {
       const selectedOptionId = selectedAnswers[index];
-      const isCorrect = question.options.some(option =>
-        option._id.toString() === selectedOptionId && option.isCorrect
+      const isCorrect = question.options.some(
+        (option) =>
+          option._id.toString() === selectedOptionId && option.isCorrect
       );
 
       answerPostest.answers.push({
@@ -235,26 +252,39 @@ exports.submitPostest = async (req, res) => {
     });
 
     // Cek apakah pengguna sudah memiliki skor postest sebelumnya
-    const existingAnswerPostest = await AnswerPostest.findOne({ user: req.userId });
+    const existingAnswerPostest = await AnswerPostest.findOne({
+      user: req.userId,
+    });
 
     if (existingAnswerPostest) {
-      return res.status(400).send({ message: "Anda sudah mengerjakan postest ini" });
+      return res
+        .status(400)
+        .send({ message: "Anda sudah mengerjakan postest ini" });
     }
 
     // Simpan objek AnswerPostest
     await AnswerPostest.create(answerPostest);
 
     // Tambahkan poin
-    const point = await Point.findOne({ user: req.userId }) || new Point({ user: req.userId });
+    const point =
+      (await Point.findOne({ user: req.userId })) ||
+      new Point({ user: req.userId });
     point.point += (score / 10) * 5;
     await point.save();
 
     // Simpan skor postest
-    const newScore = new Score({
-      postest: score,
-      user: req.userId,
-    });
-    await newScore.save();
+    const scoreExist = await Score.findOne({ user: req.userId });
+
+    if (scoreExist) {
+      scoreExist.posttest = score;
+      await scoreExist.save();
+    } else {
+      const newScore = new Score({
+        postest: score,
+        user: req.userId,
+      });
+      await newScore.save();
+    }
 
     res.send({ score });
   } catch (error) {
