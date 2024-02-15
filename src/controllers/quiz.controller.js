@@ -2,6 +2,7 @@ const db = require("../models");
 const Quiz = db.quiz;
 const Score = db.score;
 const Point = db.point;
+const AnswerPretest = db.answerPretest;
 
 exports.createQuiz = async (req, res) => {
   const { title, description, questions } = req.body;
@@ -157,6 +158,22 @@ exports.submitPretest = async (req, res) => {
       }
     });
 
+    questions.forEach(async (question, index) => {
+      const selectedOptionId = selectedAnswers[index]; // ID opsi yang dipilih oleh siswa
+      const isCorrect = question.options.some(option => option._id.toString() === selectedOptionId && option.isCorrect);
+    
+      const newAnswer = new AnswerPretest({
+        user: req.userId,
+        answer: [{
+          question: question._id,
+          selectedOption: selectedOptionId,
+          isCorrect,
+        }]
+      });
+    
+      await newAnswer.save();
+    });
+
     const scoreExist = await Score.findOne({ user: req.userId });
 
     //Jika score sudah ada tidak bisa submit lagi
@@ -187,22 +204,6 @@ exports.submitPretest = async (req, res) => {
 
       res.send({ score });
     }
-
-    // if (scoreExist) {
-    //     if (score > scoreExist.pretest) {
-    //         scoreExist.pretest = score;
-    //         await scoreExist.save();
-    //     }
-    // }else{
-    //     const newScore = new Score({
-    //         pretest: score,
-    //         user: req.userId,
-    //     });
-
-    //     await newScore.save();
-    // }
-
-    // res.send({ score });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
