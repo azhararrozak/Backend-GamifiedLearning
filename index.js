@@ -4,12 +4,15 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const https = require("https")
 const fs = require('fs');
+const path = require("path");
+const keyPath = path.resolve("/etc/letsencrypt/live/api.gamifiedlearn.tech/privkey.pem");
+const certPath = path.resolve("/etc/letsencrypt/live/api.gamifiedlearn.tech/cert.pem");
 const socketIO = require("socket.io");
 
 const app = express();
 const server = https.createServer({
-  key: fs.readFileSync(process.env.PRIV_KEY),
-  cert: fs.readFileSync(process.env.FULL_CHAIN),
+  key: fs.readFileSync(keyPath),
+  cert: fs.readFileSync(certPath),
 }, app);
 
 const io = socketIO(server, {
