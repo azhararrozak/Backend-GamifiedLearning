@@ -3,6 +3,7 @@ const Quiz = db.quiz;
 const Score = db.score;
 const Point = db.point;
 const AnswerPretest = db.answerPretest;
+const AnswerPostest = db.answerPostest;
 
 exports.createQuiz = async (req, res) => {
   const { title, description, questions } = req.body;
@@ -200,38 +201,62 @@ exports.submitPostest = async (req, res) => {
   const { id } = req.params;
   const { selectedAnswers } = req.body;
 
+  //cek user sudah mengerjakan pretest
+  const existingAnswerPretest = await AnswerPretest.findOne({ user: req.userId });
+  if (!existingAnswerPretest) {
+    return res.status(400).send({ message: "Anda belum mengerjakan pretest" });
+  }
+
   try {
     const quiz = await Quiz.findById(id);
     const { questions } = quiz;
     let score = 0;
 
+    // Hitung skor dan simpan jawaban dalam satu objek AnswerPostest
+    const answerPostest = {
+      user: req.userId,
+      answers: [],
+    };
+
     questions.forEach((question, index) => {
-      //Bandingkan options yang dipilih dengan jawaban yang benar yang dikirim dari selectedAnswer adalah id per option
-      //Jadi cari option yang id nya sama dengan selectedAnswer[index]
-      const selectedOption = question.options.find(
-        (option) => option._id.toString() === selectedAnswers[index]
+      const selectedOptionId = selectedAnswers[index];
+      const isCorrect = question.options.some(option =>
+        option._id.toString() === selectedOptionId && option.isCorrect
       );
 
-      //Jika option yang dipilih adalah jawaban yang benar, maka tambahkan score
-      if (selectedOption.isCorrect) {
+      answerPostest.answers.push({
+        question: question._id,
+        isCorrect,
+      });
+
+      if (isCorrect) {
         score += 10;
       }
     });
 
-    const scoreExist = await Score.findOne({ user: req.userId });
+    // Cek apakah pengguna sudah memiliki skor postest sebelumnya
+    const existingAnswerPostest = await AnswerPostest.findOne({ user: req.userId });
 
-    //Jika score sudah melampaui user tidak dapat submit lagi
-    if (scoreExist) {
-      res.status(400).send({ message: "Anda Sudah Mengerjakan Postest ini" });
-    } else {
-      const newScore = new Score({
-        posttest: score,
-        user: req.userId,
-      });
-
-      await newScore.save();
-      res.send({ score });
+    if (existingAnswerPostest) {
+      return res.status(400).send({ message: "Anda sudah mengerjakan postest ini" });
     }
+
+    // Simpan objek AnswerPostest
+    await AnswerPostest.create(answerPostest);
+
+    // Tambahkan poin
+    const point = await Point.findOne({ user: req.userId }) || new Point({ user: req.userId });
+    point.point += (score / 10) * 5;
+    await point.save();
+
+    // Simpan skor postest
+    const newScore = new Score({
+      postest: score,
+      user: req.userId,
+    });
+    await newScore.save();
+
+    res.send({ score });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
