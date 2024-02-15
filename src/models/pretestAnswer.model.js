@@ -6,7 +6,7 @@ const answerPretestSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  answer: [
+  answers: [
     {
       question: {
         type: mongoose.Schema.Types.ObjectId,
