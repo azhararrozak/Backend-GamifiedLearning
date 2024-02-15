@@ -145,69 +145,57 @@ exports.submitPretest = async (req, res) => {
     const { questions } = quiz;
     let score = 0;
 
+    // Hitung skor dan simpan jawaban dalam satu objek AnswerPretest
+    const answerPretest = {
+      user: req.userId,
+      answers: [],
+    };
+
     questions.forEach((question, index) => {
-      //Bandingkan options yang dipilih dengan jawaban yang benar yang dikirim dari selectedAnswer adalah id per option
-      //Jadi cari option yang id nya sama dengan selectedAnswer[index]
-      const selectedOption = question.options.find(
-        (option) => option._id.toString() === selectedAnswers[index]
+      const selectedOptionId = selectedAnswers[index];
+      const isCorrect = question.options.some(option =>
+        option._id.toString() === selectedOptionId && option.isCorrect
       );
 
-      //Jika option yang dipilih adalah jawaban yang benar, maka tambahkan score
-      if (selectedOption.isCorrect) {
+      answerPretest.answers.push({
+        question: question._id,
+        selectedOption: selectedOptionId,
+        isCorrect,
+      });
+
+      if (isCorrect) {
         score += 10;
       }
     });
 
-    const scoreExist = await Score.findOne({ user: req.userId });
+    // Cek apakah pengguna sudah memiliki skor pretest sebelumnya
+    const existingAnswerPretest = await AnswerPretest.findOne({ user: req.userId });
 
-    //Jika score sudah ada tidak bisa submit lagi
-    if (scoreExist) {
-      res.status(400).send({ message: "Anda Sudah Mengerjakan Pretest ini" });
-    } else {
-      questions.forEach(async (question, index) => {
-        const selectedOptionId = selectedAnswers[index]; // ID opsi yang dipilih oleh siswa
-        const isCorrect = question.options.some(option => option._id.toString() === selectedOptionId && option.isCorrect);
-      
-        const newAnswer = new AnswerPretest({
-          user: req.userId,
-          answer: [{
-            question: question._id,
-            selectedOption: selectedOptionId,
-            isCorrect,
-          }]
-        });
-      
-        await newAnswer.save();
-      });
-
-      //Add point 5 berdasarkan jumlah benar dan hanya sekali submit
-      const point = await Point.findOne({ user: req.userId });
-
-      if (point) {
-        point.point += (score / 10) * 5;
-        await point.save();
-      } else {
-        const newPoint = new Point({
-          point: (score / 10) * 5,
-          user: req.userId,
-        });
-
-        await newPoint.save();
-      }
-
-      const newScore = new Score({
-        pretest: score,
-        user: req.userId,
-      });
-
-      await newScore.save();
-
-      res.send({ score });
+    if (existingAnswerPretest) {
+      return res.status(400).send({ message: "Anda sudah mengerjakan pretest ini" });
     }
+
+    // Simpan objek AnswerPretest
+    await AnswerPretest.create(answerPretest);
+
+    // Tambahkan poin
+    const point = await Point.findOne({ user: req.userId }) || new Point({ user: req.userId });
+    point.point += (score / 10) * 5;
+    await point.save();
+
+    // Simpan skor pretest
+    const newScore = new Score({
+      pretest: score,
+      user: req.userId,
+    });
+    await newScore.save();
+
+    res.send({ score });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
 };
+
 
 exports.submitPostest = async (req, res) => {
   const { id } = req.params;
