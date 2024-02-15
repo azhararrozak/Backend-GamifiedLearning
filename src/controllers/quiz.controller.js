@@ -223,13 +223,6 @@ exports.submitPostest = async (req, res) => {
     if (scoreExist) {
       res.status(400).send({ message: "Anda Sudah Mengerjakan Postest ini" });
     } else {
-      const newScore = new Score({
-        posttest: score,
-        user: req.userId,
-      });
-
-      await newScore.save();
-
       questions.forEach(async (question, index) => {
         const selectedOptionId = selectedAnswers[index]; // ID opsi yang dipilih oleh siswa
         const isCorrect = question.options.some(option => option._id.toString() === selectedOptionId && option.isCorrect);
@@ -246,6 +239,13 @@ exports.submitPostest = async (req, res) => {
         await newAnswer.save();
       });
       
+      const newScore = new Score({
+        posttest: score,
+        user: req.userId,
+      });
+
+      await newScore.save();
+
       res.send({ score });
     }
   } catch (error) {
