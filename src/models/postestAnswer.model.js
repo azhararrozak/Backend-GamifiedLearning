@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const postestAnswerSchema = new mongoose.Schema({
+const answerPostestSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -21,6 +21,6 @@ const postestAnswerSchema = new mongoose.Schema({
     ],
     });
 
-const PostestAnswer = mongoose.model("PostestAnswer", postestAnswerSchema);
+const AnswerPostest = mongoose.model("AnswerPostest", answerPostestSchema);
 
-module.exports = PostestAnswer;
+module.exports = AnswerPostest;
