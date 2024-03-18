@@ -4,7 +4,7 @@ const GroupSchema = new mongoose.Schema({
     name: String,
     lead: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     problem: {
-        title: { type: String, unique: true, default: "Belum Memilh Problem" },
+        title: { type: String, default: "Belum Memilh Problem" },
         description: { type: String },
     },
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
