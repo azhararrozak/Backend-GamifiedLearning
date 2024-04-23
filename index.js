@@ -3,7 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const https = require("https")
-const http = require("http")
+//const http = require("http")
 const fs = require('fs');
 const path = require("path");
 const keyPath = path.resolve("/etc/letsencrypt/live/api.gamifiedlearn.tech/privkey.pem");
@@ -13,30 +13,30 @@ const socketIO = require("socket.io");
 const app = express();
 
 // http server
-const httpServer = http.createServer(app);
+// const httpServer = http.createServer(app);
 
 // https server
-// const server = https.createServer({
-//   key: fs.readFileSync(keyPath),
-//   cert: fs.readFileSync(certPath),
-// }, app);
+const server = https.createServer({
+  key: fs.readFileSync(keyPath),
+  cert: fs.readFileSync(certPath),
+}, app);
 
 //socket io https
-// const io = socketIO(server, {
-//   cors: {
-//     origin: "*",
-//     methods: ["GET", "POST"],
-//     credentials: true
-//   }
-// });
-
-//socket io http
-const io = socketIO(httpServer, {
+const io = socketIO(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
+    credentials: true
   }
 });
+
+//socket io http
+// const io = socketIO(httpServer, {
+//   cors: {
+//     origin: "*",
+//     methods: ["GET", "POST"],
+//   }
+// });
 
 const corsOptions = {
   origin: "*",
@@ -90,13 +90,13 @@ app.get("/", (req, res) => {
 });
 
 // start server
-// server.listen(443, () => {
-//   console.log(`Server is running on port 443`);
-// });
-
-httpServer.listen(5000, () => {
-  console.log(`Server is running on port`);
+server.listen(443, () => {
+  console.log(`Server is running on port 443`);
 });
+
+// httpServer.listen(5000, () => {
+//   console.log(`Server is running on port`);
+// });
 
 // routes
 require("./src/routes/auth.routes")(app);
