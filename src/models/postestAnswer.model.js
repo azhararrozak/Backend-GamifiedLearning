@@ -13,6 +13,14 @@ const answerPostestSchema = new mongoose.Schema({
             ref: "Question",
             required: true,
         },
+        atp: {
+            type: String,
+            required: true,
+        },
+        indicator: {
+            type: String,
+            required: true,
+        },
         isCorrect: {
             type: Boolean,
             required: true,

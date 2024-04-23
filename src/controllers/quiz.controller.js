@@ -161,6 +161,8 @@ exports.submitPretest = async (req, res) => {
 
       answerPretest.answers.push({
         question: question._id,
+        atp: question.atp,
+        indicator: question.indicator,
         isCorrect,
       });
 
@@ -230,7 +232,6 @@ exports.submitPostest = async (req, res) => {
     // Hitung skor dan simpan jawaban dalam satu objek AnswerPostest
     const answerPostest = {
       user: req.userId,
-      score: score,
       answers: [],
     };
 
@@ -243,6 +244,8 @@ exports.submitPostest = async (req, res) => {
 
       answerPostest.answers.push({
         question: question._id,
+        atp: question.atp,
+        indicator: question.indicator,
         isCorrect,
       });
 

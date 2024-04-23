@@ -28,7 +28,7 @@ exports.pushRefleksi = async (req, res) => {
         const user = refleksi.refleksi.find((user) => user.userId == req.userId);
         
         if (user) {
-            return res.status(400).json({ message: "You already push the refleksi" });
+            return res.status(400).json({ message: "Anda Sudah Mengisi Form Refleksi ini" });
         }
 
         refleksi.refleksi.push({
