@@ -23,6 +23,9 @@ const mongoose = require("mongoose");
 // );
 
 const questionsSchema = new mongoose.Schema({
+  indicator: { type: String, required: true },
+  atp: { type: String, required: true },
+  subQuestion: { type: String },
   question: { type: String, required: true },
   image: String,
   options: [{

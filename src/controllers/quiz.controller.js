@@ -291,3 +291,18 @@ exports.submitPostest = async (req, res) => {
     res.status(500).send({ message: error.message });
   }
 };
+
+exports.checkPretestByIdUser = async (req, res) => {
+  try {
+    const existingAnswerPretest = await AnswerPretest.findOne({
+      user: req.userId,
+    });
+    if (existingAnswerPretest) {
+      return res.status(200).send({ message: "Anda sudah mengerjakan pretest" });
+    } else {
+      return res.status(200).send({ message: "Anda belum mengerjakan pretest" });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+}

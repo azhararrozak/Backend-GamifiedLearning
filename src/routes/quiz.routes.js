@@ -22,6 +22,7 @@ module.exports = function(app) {
     app.get("/api/quiz/:id", [authJwt.verifyToken], controller.getQuizById);
     app.put("/api/quiz/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.updateQuiz);
     app.delete("/api/quiz/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteQuiz);
-    
+
+    app.get("/api/quiz/pretest/cekpretes", [authJwt.verifyToken], controller.checkPretestByIdUser);
 }
 
