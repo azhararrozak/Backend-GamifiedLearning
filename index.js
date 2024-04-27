@@ -114,6 +114,7 @@ require("./src/routes/unit.route")(app);
 require("./src/routes/evaluasi.routes")(app);
 require("./src/routes/refleksi.routes")(app);
 require("./src/routes/hasilnilai.routes")(app);
+require("./src/routes/problem.route")(app);
 
 // function to create roles
 async function initial() {
