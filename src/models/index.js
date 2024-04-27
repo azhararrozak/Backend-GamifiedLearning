@@ -17,6 +17,7 @@ db.evaluasi = require("./evaluasi.model");
 db.refleksi = require("./refleksi.model");
 db.answerPretest = require("./pretestAnswer.model");
 db.answerPostest = require("./postestAnswer.model");
+db.problem = require("./problem.model")
 
 db.ROLES = ["user", "admin"];
 
