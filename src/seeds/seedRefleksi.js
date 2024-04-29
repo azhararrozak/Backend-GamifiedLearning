@@ -9,25 +9,20 @@ async function seedRefleksi() {
           const initialRefleksi = [
             {
               pertemuan: "Pertemuan 1",
-              description: "Deskripsi Refleksi 1",
-              refleksi: [] // Jika ada ID lesson yang ingin Anda hubungkan, Anda dapat menambahkannya di sini
+              description: "Berisi form refleksi yang perlu di isi peserta didik setelah selesai pertemuan",
+              refleksi: []
             },
             {
               pertemuan: "Pertemuan 2",
-              description: "Deskripsi Refleksi 2",
+              description: "Berisi form refleksi yang perlu di isi peserta didik setelah selesai pertemuan",
               refleksi: []
             },
             {
                 pertemuan: "Pertemuan 3",
-                description: "Deskripsi Refleksi 3",
+                description: "Berisi form refleksi yang perlu di isi peserta didik setelah selesai pertemuan",
                 refleksi: []
               },
-              {
-                pertemuan: "Pertemuan 4",
-                description: "Deskripsi Refleksi 4",
-                refleksi: []
-              },
-            // Tambahkan data Refleksi lainnya sesuai kebutuhan
+              
           ];
     
           await Refleksi.insertMany(initialRefleksi);

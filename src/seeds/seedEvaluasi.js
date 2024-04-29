@@ -9,25 +9,19 @@ async function seedEvaluasi() {
       const initialEvaluasi = [
         {
           pertemuan: "Pertemuan 1",
-          description: "Deskripsi Evaluasi 1",
-          evaluasi: [] // Jika ada ID lesson yang ingin Anda hubungkan, Anda dapat menambahkannya di sini
+          description: "Form ini digunakan untuk mengevaluasi peserta didik yang telah mepresentasikan hasil kelompoknya",
+          evaluasi: [],
         },
         {
           pertemuan: "Pertemuan 2",
-          description: "Deskripsi Evaluasi 2",
-          evaluasi: []
+          description: "Form ini digunakan untuk mengevaluasi peserta didik yang telah mepresentasikan hasil kelompoknya",
+          evaluasi: [],
         },
         {
-            pertemuan: "Pertemuan 3",
-            description: "Deskripsi Evaluasi 3",
-            evaluasi: []
-          },
-          {
-            pertemuan: "Pertemuan 4",
-            description: "Deskripsi Evaluasi 4",
-            evaluasi: []
-          },
-        // Tambahkan data Evaluasi lainnya sesuai kebutuhan
+          pertemuan: "Pertemuan 3",
+          description: "Form ini digunakan untuk mengevaluasi peserta didik yang telah mepresentasikan hasil kelompoknya",
+          evaluasi: [],
+        },
       ];
 
       await Evaluasi.insertMany(initialEvaluasi);

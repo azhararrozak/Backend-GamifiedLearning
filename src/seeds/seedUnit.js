@@ -11,25 +11,20 @@ async function seedUnits() {
       const initialUnits = [
         {
           title: "Pertemuan 1",
-          description: "Deskripsi Unit 1",
-          lessons: [] // Jika ada ID lesson yang ingin Anda hubungkan, Anda dapat menambahkannya di sini
+          description:
+            "Pada pertemuan ini akan di pelajari mengenai perulangan for dan for in pada pemrograman Javascript",
+          lessons: [], 
         },
         {
           title: "Pertemuan 2",
-          description: "Deskripsi Unit 2",
-          lessons: []
+          description: "Pada pertemuan ini akan di pelajari mengenai perulangan for of dan metode perulangan array (map dan foreach)",
+          lessons: [],
         },
         {
-            title: "Pertemuan 3",
-            description: "Deskripsi Unit 3",
-            lessons: []
-          },
-          {
-            title: "Pertemuan 4",
-            description: "Deskripsi Unit 4",
-            lessons: []
-          },
-        // Tambahkan data unit lainnya sesuai kebutuhan
+          title: "Pertemuan 3",
+          description: "Pada pertemuan ini akan di pelajari mengenai perulangan while dan do while pada pemrograman Javascript",
+          lessons: [],
+        },
       ];
 
       await Unit.insertMany(initialUnits);
