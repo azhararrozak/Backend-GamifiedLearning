@@ -99,9 +99,12 @@ exports.submitQuiz = async (req, res) => {
       );
 
       if (selectedOption.isCorrect) {
-        score += 10;
+        score += 1;
       }
     });
+
+    //Hitung skor akhir
+    const finalScore = score / questions.length * 100;
 
     const scoreExist = await Score.findOne({ user: req.userId });
 
@@ -113,25 +116,25 @@ exports.submitQuiz = async (req, res) => {
 
       if (quizMaterialIndex !== -1) {
         // Jika sudah ada quizmaterial dengan title yang sama, update score
-        if (score > scoreExist.quizmaterials[quizMaterialIndex].score) {
-          scoreExist.quizmaterials[quizMaterialIndex].score = score;
+        if (finalScore > scoreExist.quizmaterials[quizMaterialIndex].score) {
+          scoreExist.quizmaterials[quizMaterialIndex].score = finalScore;
         }
       } else {
         // Jika belum ada quizmaterial dengan title yang sama, tambahkan baru
-        scoreExist.quizmaterials.push({ title, score });
+        scoreExist.quizmaterials.push({ title, finalScore });
       }
 
       await scoreExist.save();
     } else {
       const newScore = new Score({
-        quizmaterials: [{ title, score }],
+        quizmaterials: [{ title, finalScore }],
         user: req.userId,
       });
 
       await newScore.save();
     }
 
-    res.send({ score });
+    res.send({ finalScore });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -167,9 +170,13 @@ exports.submitPretest = async (req, res) => {
       });
 
       if (isCorrect) {
-        score += 10;
+        score += 1;
       }
+      
     });
+
+    //Hitung skor akhir
+    const finalScore = score / questions.length * 100;
 
     // Cek apakah pengguna sudah memiliki skor pretest sebelumnya
     const existingAnswerPretest = await AnswerPretest.findOne({
@@ -189,24 +196,25 @@ exports.submitPretest = async (req, res) => {
     const point =
       (await Point.findOne({ user: req.userId })) ||
       new Point({ user: req.userId });
-    point.point += (score / 10) * 5;
+    point.point += score * 5;
     await point.save();
 
     // Simpan skor pretest
     const scoreExist = await Score.findOne({ user: req.userId });
 
+    
     if (scoreExist) {
-      scoreExist.pretest = score;
+      scoreExist.pretest = finalScore;
       await scoreExist.save();
     } else {
       const newScore = new Score({
-        pretest: score,
+        pretest: finalScore,
         user: req.userId,
       });
       await newScore.save();
     }
 
-    res.send({ score });
+    res.send({ finalScore });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -250,9 +258,12 @@ exports.submitPostest = async (req, res) => {
       });
 
       if (isCorrect) {
-        score += 10;
+        score += 1;
       }
     });
+
+    //Hitung skor akhir
+    const finalScore = score / questions.length * 100;
 
     // Cek apakah pengguna sudah memiliki skor postest sebelumnya
     const existingAnswerPostest = await AnswerPostest.findOne({
@@ -272,24 +283,24 @@ exports.submitPostest = async (req, res) => {
     const point =
       (await Point.findOne({ user: req.userId })) ||
       new Point({ user: req.userId });
-    point.point += (score / 10) * 5;
+    point.point += score * 5;
     await point.save();
 
     // Simpan skor postest
     const scoreExist = await Score.findOne({ user: req.userId });
 
     if (scoreExist) {
-      scoreExist.posttest = score;
+      scoreExist.posttest = finalScore;
       await scoreExist.save();
     } else {
       const newScore = new Score({
-        postest: score,
+        postest: finalScore,
         user: req.userId,
       });
       await newScore.save();
     }
 
-    res.send({ score });
+    res.send({ finalScore });
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
@@ -301,11 +312,35 @@ exports.checkPretestByIdUser = async (req, res) => {
       user: req.userId,
     });
     if (existingAnswerPretest) {
-      return res.status(200).send({ message: "Anda sudah mengerjakan pretest" });
+      return res
+        .status(200)
+        .send({ message: "Anda sudah mengerjakan pretest" });
     } else {
-      return res.status(200).send({ message: "Anda belum mengerjakan pretest" });
+      return res
+        .status(200)
+        .send({ message: "Anda belum mengerjakan pretest" });
     }
   } catch (error) {
     res.status(500).send({ message: error.message });
   }
-}
+};
+
+exports.checkPostestByIdUser = async (req, res) => {
+  try {
+    const existingAnswerPostest = await AnswerPostest.findOne({
+      user: req.userId,
+    });
+
+    if (existingAnswerPostest) {
+      return res
+        .status(200)
+        .send({ message: "Anda sudah mengerjakan postest" });
+    } else {
+      return res
+        .status(200)
+        .send({ message: "Anda belum mengerjakan postest" });
+    }
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
