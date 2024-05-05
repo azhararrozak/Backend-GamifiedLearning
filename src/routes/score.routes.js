@@ -10,7 +10,7 @@ module.exports = function(app) {
         next();
     });
 
-    app.get("/api/score", [authJwt.verifyToken], controller.getAllScore);
-    app.get("/api/score/pretest", [authJwt.verifyToken], controller.getPretestScore);
+    app.get("/api/score/all", [authJwt.verifyToken], controller.getAllScore);
+    app.get("/api/score", [authJwt.verifyToken], controller.getScoreByIdUser);
     
 }

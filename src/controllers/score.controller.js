@@ -11,7 +11,7 @@ exports.getAllScore = async (req, res) => {
 }
 
 // Ambil data pretest berdasarkan user
-exports.getPretestScore = async (req, res) => {
+exports.getScoreByIdUser = async (req, res) => {
     try {
         const scores = await Score.find({ user: req.userId }).populate("user", "-__v");
         res.send(scores);
