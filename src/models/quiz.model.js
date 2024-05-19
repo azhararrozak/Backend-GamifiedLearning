@@ -29,7 +29,7 @@ const questionsSchema = new mongoose.Schema({
   question: { type: String, required: true },
   image: String,
   options: [{
-    text: { type: String, required: true },
+    text: { type: String },
     image: String,
     isCorrect: { type: Boolean, required: true, default: false },
   }],
