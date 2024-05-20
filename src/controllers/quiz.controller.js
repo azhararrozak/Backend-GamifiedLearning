@@ -33,6 +33,15 @@ exports.getQuiz = async (req, res) => {
   }
 };
 
+exports.getAllQuiz = async (req, res) => {
+  try {
+    const quiz = await Quiz.find();
+    res.send(quiz);
+  } catch (error) {
+    res.status(500).send({ message: error.message });
+  }
+};
+
 exports.getQuizByTitle = async (req, res) => {
   try {
     const title = req.params.title;

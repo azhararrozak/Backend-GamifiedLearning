@@ -17,6 +17,7 @@ module.exports = function(app) {
     app.post("/api/quiz/:id/submitpostest", [authJwt.verifyToken], controller.submitPostest)
 
 
+    app.get("/api/quiz/all", [authJwt.verifyToken, authJwt.isAdmin], controller.getAllQuiz);
     app.post("/api/quiz", [authJwt.verifyToken, authJwt.isAdmin], controller.createQuiz);
     app.get("/api/quiz", [authJwt.verifyToken], controller.getQuiz);
     app.get("/api/quiz/:id", [authJwt.verifyToken], controller.getQuizById);
@@ -24,5 +25,6 @@ module.exports = function(app) {
     app.delete("/api/quiz/:id", [authJwt.verifyToken, authJwt.isAdmin], controller.deleteQuiz);
 
     app.get("/api/quiz/pretest/cekpretes", [authJwt.verifyToken], controller.checkPretestByIdUser);
+    app.get("/api/quiz/postest/cekpostes", [authJwt.verifyToken], controller.checkPostestByIdUser);
 }
 
