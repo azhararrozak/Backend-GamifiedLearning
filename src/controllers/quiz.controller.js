@@ -64,6 +64,16 @@ exports.getQuizById = async (req, res) => {
   }
 };
 
+exports.getQuizByIdAdmin = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const quiz = await Quiz.findById(id);
+    res.json({ quiz });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 exports.updateQuiz = async (req, res) => {
   const { title, description, questions } = req.body;
 
