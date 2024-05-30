@@ -19,7 +19,6 @@ const answerPostestSchema = new mongoose.Schema({
         },
         indicator: {
             type: String,
-            required: true,
         },
         isCorrect: {
             type: Boolean,
