@@ -96,9 +96,12 @@ exports.getListSubmit = async (req, res) => {
 
 exports.setcompletedTask = async (req, res) => {
   try {
+    
     const task = await Task.findById(req.params.id).populate(
       "submittedByUser.userId"
     );
+
+    const score = req.body.score;
 
     const checkUserSubmited = task.submittedByUser.find(
       (submission) => submission.userId.username === req.body.name
@@ -113,6 +116,7 @@ exports.setcompletedTask = async (req, res) => {
           .send({ message: "You have already completed this task!" });
       } else {
         checkUserSubmited.completed = true;
+        checkUserSubmited.score = score;
         await task.save();
         res.send({ message: "Task was completed successfully!" });
       }

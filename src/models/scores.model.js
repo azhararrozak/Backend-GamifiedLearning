@@ -17,7 +17,7 @@ const Score = mongoose.model(
         },
         quizmaterials: [{
             title: String,
-            score: Number,
+            finalScore: Number,
         }],
     })
 );

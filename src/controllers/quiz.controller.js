@@ -123,7 +123,7 @@ exports.submitQuiz = async (req, res) => {
     });
 
     //Hitung skor akhir
-    const finalScore = score / questions.length * 100;
+    const finalScore = (score / questions.length) * 100;
 
     const scoreExist = await Score.findOne({ user: req.userId });
 
@@ -145,6 +145,12 @@ exports.submitQuiz = async (req, res) => {
 
       await scoreExist.save();
     } else {
+      const point =
+        (await Point.findOne({ user: req.userId })) ||
+        new Point({ user: req.userId });
+      point.point += score * 5;
+      await point.save();
+
       const newScore = new Score({
         quizmaterials: [{ title, finalScore }],
         user: req.userId,
@@ -191,11 +197,10 @@ exports.submitPretest = async (req, res) => {
       if (isCorrect) {
         score += 1;
       }
-      
     });
 
     //Hitung skor akhir
-    const finalScore = score / questions.length * 100;
+    const finalScore = (score / questions.length) * 100;
 
     // Cek apakah pengguna sudah memiliki skor pretest sebelumnya
     const existingAnswerPretest = await AnswerPretest.findOne({
@@ -221,7 +226,6 @@ exports.submitPretest = async (req, res) => {
     // Simpan skor pretest
     const scoreExist = await Score.findOne({ user: req.userId });
 
-    
     if (scoreExist) {
       scoreExist.pretest = finalScore;
       await scoreExist.save();
@@ -282,7 +286,7 @@ exports.submitPostest = async (req, res) => {
     });
 
     //Hitung skor akhir
-    const finalScore = score / questions.length * 100;
+    const finalScore = (score / questions.length) * 100;
 
     // Cek apakah pengguna sudah memiliki skor postest sebelumnya
     const existingAnswerPostest = await AnswerPostest.findOne({

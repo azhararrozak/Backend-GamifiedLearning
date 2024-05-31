@@ -27,6 +27,7 @@ const Task = mongoose.model(
                 type: Boolean,
                 default: false
             },
+            score: Number,
         }],
     })
 );
